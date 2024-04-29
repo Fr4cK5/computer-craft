@@ -29,8 +29,8 @@ MIN_SEED_COUNT = 128
 -- Width of the water lane between chunks
 WATER_LANE_WIDTH = 1
 
--- Width of each chunk, must be multiple of four
-FIELD_SCHEME = { 4, 8, 4 }
+-- Width of each chunk divided by four. 1 2 1 -> 4 8 4
+FIELD_SCHEME = { 1, 2, 1 }
 
 -- Global
 CROP_FILTER = "minecraft:crops"
@@ -245,9 +245,8 @@ end
 
 function Main()
 	while true do
-
 		for chunk_idx, v in ipairs(FIELD_SCHEME) do
-			for i = 1, v / 4 do
+			for i = 1, v do
 				TraverseFourByLen(FIELD_LENGTH)
 			end
 
