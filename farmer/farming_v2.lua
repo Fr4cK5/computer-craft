@@ -10,6 +10,37 @@ function Forward(n)
 	end
 end
 
+function LeftTurn()
+	turtle.turnLeft()
+end
+
+function RightTurn()
+	turtle.turnLeft()
+end
+
+function TraverseFourByLen(len)
+	local lane_right = function()
+		RightTurn()
+		Forward(1)
+		RightTurn()
+	end
+
+	local lane_left = function()
+		LeftTurn()
+		Forward(1)
+		LeftTurn()
+	end
+
+	Forward(len)
+	lane_right()
+	Forward(len)
+	lane_left()
+	Forward(len)
+	lane_right()
+	Forward(len)
+end
+
+
 function Main()
 	while true do
 		sleep(SLEEP_TIME_SECS)
@@ -17,4 +48,4 @@ function Main()
 end
 
 -- Main()
-Forward(FIELD_LENGTH - 1)
+TraverseFourByLen(5)
