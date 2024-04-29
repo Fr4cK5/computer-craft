@@ -2,6 +2,7 @@
 
 -- Settings
 SLEEP_TIME_SECS = 300
+FIELD_LENGTH = 20
 
 function Forward(n)
 	for i = 1, n do
@@ -16,4 +17,4 @@ function Main()
 end
 
 -- Main()
-Forward(2)
+Forward(FIELD_LENGTH - 1)
