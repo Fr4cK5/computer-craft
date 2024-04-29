@@ -24,7 +24,7 @@ SEED_ITEM_NAME = "minecraft:wheat_seeds"
 POSSIBLE_HAREVESTS = {
 	"minecraft:wheat"
 }
-MIN_SEED_COUNT = 32
+MIN_SEED_COUNT = 64
 MAX_SEED_COUNT = 128
 
 -- Width of the water lane between chunks
@@ -295,7 +295,6 @@ function HandleItems()
 
 	--               						        * 4 -> The user inputs the amount of 4-wide chunks instead of the block count.
 	local remaining_width = (SumArray(FIELD_SCHEME) * 4 - 4) + ((#FIELD_SCHEME - 1) * WATER_LANE_WIDTH)
-	print("Remaining Width: " .. remaining_width)
 	Forward(remaining_width)
 
 	TurnRight()
@@ -326,6 +325,7 @@ function Main()
 		end
 
 		HandleItems()
+		StackItems()
 		sleep(SLEEP_TIME_SECS)
 	end
 end
