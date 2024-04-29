@@ -106,11 +106,13 @@ function HasItemInInventory(name)
 		local detail = turtle.getItemDetail(i)
 		if detail ~= nil then
 			if detail["name"] == name then
+				print("Found item " .. name .. " at " .. i)
 				return i
 			end
 		end
 	end
 
+	print("Unable to find item " .. name)
 	return 0
 end
 
