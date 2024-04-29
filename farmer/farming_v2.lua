@@ -251,6 +251,11 @@ function Main()
 		for chunk_idx, v in ipairs(FIELD_SCHEME) do
 			for i = 1, v do
 				TraverseFourByLen(FIELD_LENGTH)
+				if i >= 2 then
+					TurnLeft()
+					Forward(WATER_LANE_WIDTH + 1)
+					TurnLeft()
+				end
 			end
 
 			-- We don't want to go to the next lane the last time, as it doesn't exist!
@@ -261,6 +266,7 @@ function Main()
 			TurnLeft()
 			Forward(WATER_LANE_WIDTH + 1)
 			TurnLeft()
+
 		end
 
 		HandleItems()
