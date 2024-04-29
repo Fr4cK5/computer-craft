@@ -331,4 +331,5 @@ function Main()
 end
 
 -- Main()
-StackItems()
+-- StackItems()
+HandleItems()
