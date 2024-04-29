@@ -251,7 +251,7 @@ function Main()
 		for chunk_idx, v in ipairs(FIELD_SCHEME) do
 			for i = 1, v do
 				TraverseFourByLen(FIELD_LENGTH)
-				if i >= 2 then
+				if i >= 2 and i % 2 == 0 then
 					TurnLeft()
 					Forward(WATER_LANE_WIDTH + 1)
 					TurnLeft()
