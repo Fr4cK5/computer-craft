@@ -1,24 +1,6 @@
 -- Farming V2
 
---[[
-	turtle.inspect().data {
-		state {
-			age,
-		},
-		tags {
-			minecraft:crops,
-			...,
-		},
-	},
-
-	turtle.getItemDetail() {
-		name,
-		count,
-	},
-
-]]
-
--- Settings
+-- Settings --
 
 -- Pause time in between harvest runs
 SLEEP_TIME_SECS = 300
@@ -27,7 +9,9 @@ SLEEP_TIME_SECS = 300
 FIELD_LENGTH = 20
 
 -- Items
+-- https://feed-the-beast.fandom.com/wiki/Turtle
 FUEL_ITEM_NAME = "minecraft:coal"
+CURRENT_FUEL_ITEM_EFFICIENCY = 80
 SEED_ITEM_NAME = "minecraft:wheat_seeds"
 POSSIBLE_HAREVESTS = {
 	"minecraft:wheat"
@@ -154,7 +138,7 @@ function CheckFuelLevels(min_fuel, fuel_item)
 		end
 
 		local item_info = turtle.getItemDetail(idx)
-		turtle.refuel(item_info["count"])
+		turtle.refuel(item_info["count"] / CURRENT_FUEL_ITEM_EFFICIENCY) 
 	end
 end
 
@@ -229,11 +213,11 @@ function RegulateSeeds(seed_item, min_seed_count)
 	end
 end
 
--- https://feed-the-beast.fandom.com/wiki/Turtle
+
 -- @param {string} fuel_item The fuel item's full identifier
 function TakeFuel(fuel_item)
 	local total = GetTotalItemCount(fuel_item)
-	local min_fuel_items = MIN_FUEL_FOR_HARVEST_RUN / 80 -- Coal is 80
+	local min_fuel_items = MIN_FUEL_FOR_HARVEST_RUN / CURRENT_FUEL_ITEM_EFFICIENCY
 	turtle.suckDown(math.ceil(min_fuel_items - total))
 end
 
@@ -265,7 +249,7 @@ function Main()
 				TraverseFourByLen(FIELD_LENGTH)
 			end
 
-			-- We don't want to the next lane the last time, as it doesn't exist!
+			-- We don't want to go to the next lane the last time, as it doesn't exist!
 			if chunk_idx == #FIELD_SCHEME then
 				break
 			end
