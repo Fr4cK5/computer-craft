@@ -2,6 +2,14 @@
 
 -- Settings --
 
+function SumArray(arr)
+	local sum = 0
+	for _, v in ipairs(FIELD_SCHEME) do
+		sum = sum + v
+	end
+	return sum
+end
+
 -- Pause time in between harvest runs
 SLEEP_TIME_SECS = 300
 
@@ -28,13 +36,6 @@ FIELD_SCHEME = { 4, 8, 4 }
 CROP_FILTER = "minecraft:crops"
 MIN_FUEL_FOR_HARVEST_RUN = SumArray(FIELD_SCHEME) * FIELD_LENGTH
 
-function SumArray(arr)
-	local sum = 0
-	for _, v in ipairs(FIELD_SCHEME) do
-		sum = sum + v
-	end
-	return sum
-end
 
 -- @returns {table} Block data of the below block, or nil
 function GetBlockDetailsBelow()
