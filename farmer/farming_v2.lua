@@ -139,7 +139,7 @@ function CheckFuelLevels(min_fuel, fuel_item)
 		end
 
 		local item_info = turtle.getItemDetail(idx)
-		turtle.refuel(item_info["count"] / CURRENT_FUEL_ITEM_EFFICIENCY) 
+		turtle.refuel(math.ceil(item_info["count"] / CURRENT_FUEL_ITEM_EFFICIENCY)) 
 	end
 end
 
