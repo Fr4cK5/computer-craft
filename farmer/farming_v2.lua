@@ -132,7 +132,9 @@ end
 -- @param {int} min_fuel The minimum amount of fuel the turtle must have
 -- @param {string} fuel_item The item to be consumed as fuel
 function CheckFuelLevels(min_fuel, fuel_item)
-	if turtle.getFuelLevel() <= min_fuel then
+	local turtle_fuel_level = turtle.getFuelLevel()
+	if turtle_fuel_level < min_fuel then
+		local diff = min_fuel - turtle_fuel_level
 		local idx = HasItemInInventory(fuel_item)
 
 		if idx == 0 then
@@ -141,7 +143,7 @@ function CheckFuelLevels(min_fuel, fuel_item)
 
 		local item_info = turtle.getItemDetail(idx)
 		turtle.select(idx)
-		turtle.refuel(math.ceil(item_info["count"] / CURRENT_FUEL_ITEM_EFFICIENCY)) 
+		turtle.refuel(math.ceil(diff / CURRENT_FUEL_ITEM_EFFICIENCY)) 
 	end
 end
 
