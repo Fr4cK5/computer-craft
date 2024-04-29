@@ -15,7 +15,7 @@ function LeftTurn()
 end
 
 function RightTurn()
-	turtle.turnLeft()
+	turtle.turnRight()
 end
 
 function TraverseFourByLen(len)
