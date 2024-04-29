@@ -4,7 +4,7 @@
 
 function SumArray(arr)
 	local sum = 0
-	for _, v in ipairs(FIELD_SCHEME) do
+	for _, v in ipairs(arr) do
 		sum = sum + v
 	end
 	return sum
@@ -106,13 +106,11 @@ function HasItemInInventory(name)
 		local detail = turtle.getItemDetail(i)
 		if detail ~= nil then
 			if detail["name"] == name then
-				print("Found item " .. name .. " at " .. i)
 				return i
 			end
 		end
 	end
 
-	print("Unable to find item: " .. name)
 	return 0
 end
 
@@ -141,6 +139,7 @@ function CheckFuelLevels(min_fuel, fuel_item)
 		end
 
 		local item_info = turtle.getItemDetail(idx)
+		turtle.select(idx)
 		turtle.refuel(math.ceil(item_info["count"] / CURRENT_FUEL_ITEM_EFFICIENCY)) 
 	end
 end
