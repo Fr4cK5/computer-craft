@@ -112,7 +112,7 @@ function HasItemInInventory(name)
 		end
 	end
 
-	print("Unable to find item " .. name)
+	print("Unable to find item: " .. name)
 	return 0
 end
 
