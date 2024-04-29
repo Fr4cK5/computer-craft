@@ -1,4 +1,4 @@
-local url = ""
+local url = "https://raw.githubusercontent.com/Fr4cK5/computer-craft/master/farmer/farming.lua"
 local filename = "farming.lua"
 
 shell.run("wget " .. url .. " " .. filename)
