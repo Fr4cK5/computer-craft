@@ -284,7 +284,7 @@ function HandleItems()
 	DropCrops(POSSIBLE_HAREVESTS)
 	Forward(1)
 
-	RegulateSeeds(SEED_ITEM_NAME, MIN_SEED_COUNT)
+	RegulateSeeds(SEED_ITEM_NAME, MIN_SEED_COUNT, MAX_SEED_COUNT)
 	Forward(1)
 
 	TakeFuel(FUEL_ITEM_NAME)
