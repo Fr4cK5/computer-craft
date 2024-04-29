@@ -28,7 +28,11 @@ FIELD_LENGTH = 20
 
 -- Items
 FUEL_ITEM_NAME = "minecraft:coal"
-SEED_PLANT_NAME = "minecraft:wheat_seeds"
+SEED_ITEM_NAME = "minecraft:wheat_seeds"
+POSSIBLE_HAREVESTS = {
+	"minecraft:wheat"
+}
+MIN_SEED_COUNT = 128
 
 -- Width of the water lane between chunks
 WATER_LANE_WIDTH = 1
@@ -48,6 +52,7 @@ function SumArray(arr)
 	return sum
 end
 
+-- @returns {table} Block data of the below block, or nil
 function GetBlockDetailsBelow()
 	local block_exists, data = turtle.inspectDown()
 	if not block_exists then
@@ -124,10 +129,40 @@ function HasItemInInventory(name)
 	return 0
 end
 
+function GetTotalItemCount(name)
+	local total = 0
+	for i = 1, 16 do
+		local detail = turtle.getItemDetail(i)
+		if detail ~= nil then
+			if detail["name"] == name then
+				total = total + detail["count"]
+			end
+		end
+	end
+
+	return total
+end
+
+-- @param {int} min_fuel The minimum amount of fuel the turtle must have
+-- @param {string} fuel_item The item to be consumed as fuel
+function CheckFuelLevels(min_fuel, fuel_item)
+	if turtle.getFuelLevel() <= min_fuel then
+		local idx = HasItemInInventory(fuel_item)
+
+		if idx == 0 then
+			return
+		end
+
+		local item_info = turtle.getItemDetail(idx)
+		turtle.refuel(item_info["count"])
+	end
+end
+
 -- @param {int} n How my blocks to move
 function Forward(n)
 	for i = 1, n do
 		HarvestIfValid()
+		CheckFuelLevels(MIN_FUEL_FOR_HARVEST_RUN, FUEL_ITEM_NAME)
 		turtle.forward()
 	end
 end
@@ -164,11 +199,85 @@ function TraverseFourByLen(len)
 	Forward(len)
 end
 
+-- @param {table} crops A list of item identifiers to deposit
+function DropCrops(crops)
+	for _, crop in ipairs(crops) do
+		local idx = HasItemInInventory(crop)
+		while idx ~= 0 do
+			turtle.select(idx)
+			turtle.dropDown()
+			idx = HasItemInInventory(crop)
+		end
+	end
+end
+
+function RegulateSeeds(seed_item, min_seed_count)
+	local total = GetTotalItemCount(seed_item)
+	local diff = min_seed_count - total
+
+	-- While this is a softlock situation if the provider inventory
+	-- runs out of fuel items, the turtle woudn't have made it a whole run
+	-- anyways, so I think that's alright.
+	while diff > 0 do
+		if diff > 64 then
+			turtle.suckDown(64)
+			diff = diff - 64
+		else
+			turtle.suckDown(diff)
+			break
+		end
+	end
+end
+
+-- https://feed-the-beast.fandom.com/wiki/Turtle
+-- @param {string} fuel_item The fuel item's full identifier
+function TakeFuel(fuel_item)
+	local total = GetTotalItemCount(fuel_item)
+	local min_fuel_items = MIN_FUEL_FOR_HARVEST_RUN / 80 -- Coal is 80
+	turtle.suckDown(math.ceil(min_fuel_items - total))
+end
+
+function HandleItems()
+	Forward(2)
+	TurnRight()
+
+	DropCrops(POSSIBLE_HAREVESTS)
+	Forward(1)
+
+	RegulateSeeds(SEED_ITEM_NAME, MIN_SEED_COUNT)
+	Forward(1)
+
+	TakeFuel(FUEL_ITEM_NAME)
+	Forward(1)
+
+	local remaining_width = (SumArray(FIELD_SCHEME) - 4) + ((#FIELD_SCHEME - 1) * WATER_LANE_WIDTH)
+	Forward(remaining_width)
+
+	TurnRight()
+	Forward(2)
+end
+
 function Main()
 	while true do
+
+		for chunk_idx, v in ipairs(FIELD_SCHEME) do
+			for i = 1, v / 4 do
+				TraverseFourByLen(FIELD_LENGTH)
+			end
+
+			-- We don't want to the next lane the last time, as it doesn't exist!
+			if chunk_idx == #FIELD_SCHEME then
+				break
+			end
+
+			TurnLeft()
+			Forward(WATER_LANE_WIDTH)
+			TurnLeft()
+		end
+
+		HandleItems()
 		sleep(SLEEP_TIME_SECS)
 	end
 end
 
--- Main()
-TraverseFourByLen(5)
+Main()
