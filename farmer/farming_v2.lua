@@ -38,8 +38,11 @@ CROP_TAG_FILTER = "minecraft:crops"
 MIN_FUEL_FOR_HARVEST_RUN = SumArray(FIELD_SCHEME) * FIELD_LENGTH
 
 function StackItems()
-	local find_last_free_slot = function()
+	local find_last_free_slot = function(current_idx)
 		for i = 16, 1, -1 do
+			if i <= current_idx then
+				return nil
+			end
 			if turtle.getItemDetail(i) == nil then
 				return i
 			end
@@ -74,10 +77,13 @@ function StackItems()
 			if next_idx ~= nil then
 				turtle.transferTo(next_idx)
 				if turtle.getItemDetail(i) ~= nil then
-					turtle.transferTo(find_last_free_slot())
+					turtle.transferTo(find_last_free_slot(i))
 				end
 			else
-				turtle.transferTo(find_last_free_slot())
+				local last_idx = find_last_free_slot(i)
+				if last_idx ~= nil then
+					turtle.transferTo(last_idx)
+				end
 			end
 		end
 	end
