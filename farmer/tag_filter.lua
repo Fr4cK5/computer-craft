@@ -1,4 +1,4 @@
-local _, dat = turtle.inspect()
+local _, dat = turtle.inspectDown()
 
 -- namespace:tag
 local tag_type = "minecraft"
