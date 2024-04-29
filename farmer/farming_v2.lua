@@ -51,14 +51,18 @@ end
 -- @returns {bool} If the block below contains tag_key
 function CheckBlockValid(data, tag_key)
 	if data == nil then
+		print("invalid")
 		return false
 	end
 
 	for k, v in pairs(data["tags"]) do
 		if string.find(k, tag_key) ~= nil then
+			print("valid")
 			return true
 		end
 	end
+
+	print("valid")
 	return false
 end
 
@@ -69,6 +73,8 @@ function CheckCropAgeMature(data)
 		return false
 	end
 
+	print("age: " .. (data["state"]["age"] == 7))
+
 	return data["state"]["age"] == 7
 end
 
@@ -77,6 +83,7 @@ end
 function HarvestIfValid(replacement_seed, filter)
 	local data = GetBlockDetailsBelow()
 	if data == nil then
+		print("no block info")
 		return
 	end
 
