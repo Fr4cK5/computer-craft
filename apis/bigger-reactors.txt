@@ -1,0 +1,33 @@
+active() -> boolean
+stackTemperature() -> number // HUD: "Case Heat"
+setAllControlRodLevels(0-100) -> void
+setActive(active) -> void
+getControlRod(index: 0-controlRodCount() - 1) -> ControlRod
+    .index() -> number
+    .level() -> number
+    .name() -> string
+    .setLevel(0-100) -> void
+    .setName(name: string) -> void
+    .valid() -> boolean
+
+fuelTemperature() -> number
+fuelTank() -> FuelTank
+    .burnedLastTick() -> number
+    .capacity() -> number
+    .ejectWaste() -> boolean
+    .fuel() -> number
+    .fuelTemperature -> number: percentage
+    .totalReactant() -> number
+    .waste() -> number: waster in mixture
+
+coolantTank() -> nil
+controlRodCount() -> number
+connected() -> boolean: Connected to ComputerCraft network
+casingTemperature() -> number
+battery() -> number
+    .capacity() -> number
+    .producedLastTick() -> number
+    .stored() -> number
+    
+apiVersion() -> string
+ambientTemperature() -> number
