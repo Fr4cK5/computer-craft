@@ -239,7 +239,8 @@ function HandleItems()
 	TakeFuel(FUEL_ITEM_NAME)
 	Forward(1)
 
-	local remaining_width = (SumArray(FIELD_SCHEME) - 4) + ((#FIELD_SCHEME - 1) * WATER_LANE_WIDTH)
+	local remaining_width = (SumArray(FIELD_SCHEME) * 4 - 4) + ((#FIELD_SCHEME - 1) * WATER_LANE_WIDTH)
+	print("Remaining Width: " .. remaining_width)
 	Forward(remaining_width)
 
 	TurnRight()
@@ -250,8 +251,8 @@ function Main()
 	while true do
 		for chunk_idx, v in ipairs(FIELD_SCHEME) do
 			for i = 1, v do
+				-- If there are thicc 8-wide fields, this is how we'll position correctly
 				if i >= 2 and i % 2 == 0 then
-					print("cuh")
 					TurnLeft()
 					Forward(1)
 					TurnLeft()
@@ -267,7 +268,6 @@ function Main()
 			TurnLeft()
 			Forward(WATER_LANE_WIDTH + 1)
 			TurnLeft()
-
 		end
 
 		HandleItems()
