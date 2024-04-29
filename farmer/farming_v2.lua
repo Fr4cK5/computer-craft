@@ -37,6 +37,51 @@ FIELD_SCHEME = { 1, 2, 1 }
 CROP_TAG_FILTER = "minecraft:crops"
 MIN_FUEL_FOR_HARVEST_RUN = SumArray(FIELD_SCHEME) * FIELD_LENGTH
 
+function StackItems()
+	local find_last_free_slot = function()
+		for i = 16, 1, -1 do
+			if turtle.getItemDetail(i) == nil then
+				return i
+			end
+		end
+
+		return nil
+	end
+
+	local get_next_idx_of_same_item = function(start, name)
+		if start >= 16 then
+			return nil
+		end
+
+		for i = start, 16 do
+		 	local info = turtle.getItemDetail(i)
+			if info ~= nil then
+				if info["name"] == name then
+					return i
+				end
+			end
+		end
+
+		return nil
+	end
+
+	for i = 1, 16 do
+		local info = turtle.getItemDetail(i)
+		if info ~= nil then
+			local next_idx = get_next_idx_of_same_item(i + 1, info["name"])
+			turtle.select(i)
+
+			if next_idx ~= nil then
+				turtle.transferTo(next_idx)
+				if turtle.getItemDetail(i) ~= nil then
+					turtle.transferTo(find_last_free_slot())
+				end
+			else
+				turtle.transferTo(find_last_free_slot())
+			end
+		end
+	end
+end
 
 -- @returns {table} Block data of the below block, or nil
 function GetBlockDetailsBelow()
@@ -201,6 +246,9 @@ function DropCrops(crops)
 	end
 end
 
+-- @param {string} seed_item Seed item identifier
+-- @param {int} min_seed_count The minimum seeds the turtle must have while harvesting
+-- @param {int} max_seed_count The maximum seeds the turtle should have while harvesting
 function RegulateSeeds(seed_item, min_seed_count, max_seed_count)
 	local total = GetTotalItemCount(seed_item)
 	local diff = min_seed_count - total
@@ -215,7 +263,6 @@ function RegulateSeeds(seed_item, min_seed_count, max_seed_count)
 		end
 	end
 end
-
 
 -- @param {string} fuel_item The fuel item's full identifier
 function TakeFuel(fuel_item)
@@ -274,4 +321,5 @@ function Main()
 	end
 end
 
-Main()
+-- Main()
+StackItems()
