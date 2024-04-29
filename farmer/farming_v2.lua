@@ -11,7 +11,8 @@ function SumArray(arr)
 end
 
 -- Pause time in between harvest runs
-SLEEP_TIME_SECS = 300
+-- 10 Minutes
+SLEEP_TIME_SECS = 600
 
 -- Length of the field
 FIELD_LENGTH = 20
@@ -301,6 +302,22 @@ function HandleItems()
 	Forward(2)
 end
 
+function DropOverflowSeeds(seed_item, max_seed_count)
+	local total = GetTotalItemCount(seed_item)
+	local diff = total - max_seed_count
+
+	while diff > max_seed_count do
+		local idx = HasItemInInventory(seed_item)
+		local info = turtle.getItemDetail(idx)
+		local smallest = math.min(64, diff, info["count"])
+
+		turtle.select(idx)
+		turtle.dropDown(smallest)
+
+		diff = diff - smallest
+	end
+end
+
 function Main()
 	while true do
 		for chunk_idx, v in ipairs(FIELD_SCHEME) do
@@ -312,6 +329,7 @@ function Main()
 					TurnLeft()
 				end
 				TraverseFourByLen(FIELD_LENGTH)
+				DropOverflowSeeds(SEED_ITEM_NAME, MAX_SEED_COUNT)
 			end
 
 			-- We don't want to go to the next lane the last time, as it doesn't exist!
@@ -330,6 +348,6 @@ function Main()
 	end
 end
 
--- Main()
+Main()
 -- StackItems()
-HandleItems()
+-- HandleItems()
