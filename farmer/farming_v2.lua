@@ -19,13 +19,34 @@
 ]]
 
 -- Settings
+
+-- Pause time in between harvest runs
 SLEEP_TIME_SECS = 300
+
+-- Length of the field
 FIELD_LENGTH = 20
+
+-- Items
 FUEL_ITEM_NAME = "minecraft:coal"
 SEED_PLANT_NAME = "minecraft:wheat_seeds"
 
+-- Width of the water lane between chunks
+WATER_LANE_WIDTH = 1
+
+-- Width of each chunk, must be multiple of four
+FIELD_SCHEME = { 4, 8, 4 }
+
 -- Global
 CROP_FILTER = "minecraft:crops"
+MIN_FUEL_FOR_HARVEST_RUN = SumArray(FIELD_SCHEME) * FIELD_LENGTH
+
+function SumArray(arr)
+	local sum = 0
+	for _, v in ipairs(FIELD_SCHEME) do
+		sum = sum + v
+	end
+	return sum
+end
 
 function GetBlockDetailsBelow()
 	local block_exists, data = turtle.inspectDown()
@@ -39,6 +60,10 @@ end
 -- @param {string} tag_key Tag
 -- @returns {bool} If the block below contains tag_key
 function CheckBlockValid(data, tag_key)
+	if data == nil then
+		return false
+	end
+
 	for k, v in pairs(data["tags"]) do
 		if string.find(k, tag_key) ~= nil then
 			return true
@@ -50,7 +75,7 @@ end
 -- @param {table} data Block state data
 -- @returns {bool} If the crop is mature eg. its age value is set to 7
 function CheckCropAgeMature(data)
-	if data["state"] == nil or data["state"]["age"] == nil then
+	if data == nil or data["state"] == nil or data["state"]["age"] == nil then
 		return false
 	end
 
@@ -107,11 +132,11 @@ function Forward(n)
 	end
 end
 
-function LeftTurn()
+function TurnLeft()
 	turtle.turnLeft()
 end
 
-function RightTurn()
+function TurnRight()
 	turtle.turnRight()
 end
 
@@ -119,15 +144,15 @@ end
 -- @param {int} len The length of the field
 function TraverseFourByLen(len)
 	local lane_right = function()
-		RightTurn()
+		TurnRight()
 		Forward(1)
-		RightTurn()
+		TurnRight()
 	end
 
 	local lane_left = function()
-		LeftTurn()
+		TurnLeft()
 		Forward(1)
-		LeftTurn()
+		TurnLeft()
 	end
 
 	Forward(len)
