@@ -1,5 +1,10 @@
 Files = {
 	{
+		url = "https://raw.githubusercontent.com/Fr4cK5/computer-craft/master/farmer/tag_filter.lua",
+		filename = "tag_filter.lua",
+		ignore = false,
+	},
+	{
 		url = "https://raw.githubusercontent.com/Fr4cK5/computer-craft/master/farmer/farming_v2.lua",
 		filename = "farming_v2.lua",
 		ignore = false,
@@ -8,7 +13,7 @@ Files = {
 		url = "https://raw.githubusercontent.com/Fr4cK5/computer-craft/master/farmer/farming.lua",
 		filename = "farming.lua",
 		ignore = true,
-	}
+	},
 }
 
 function DownloadFile(url, filename)
