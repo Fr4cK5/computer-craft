@@ -204,10 +204,14 @@ function RegulateSeeds(seed_item, min_seed_count)
 	local total = GetTotalItemCount(seed_item)
 	local diff = min_seed_count - total
 
+	print("Total: " .. total)
+	print("Min Seeds: " .. min_seed_count)
+
 	-- While this is a softlock situation if the provider inventory
 	-- runs out of fuel items, the turtle woudn't have made it a whole run
 	-- anyways, so I think that's alright.
 	while diff > 0 do
+		print("Diff: " .. diff)
 		if diff > 64 then
 			turtle.suckDown(64)
 			diff = diff - 64
@@ -239,6 +243,7 @@ function HandleItems()
 	TakeFuel(FUEL_ITEM_NAME)
 	Forward(1)
 
+	--               						        * 4 -> The user inputs the amount of 4-wide chunks instead of the block count.
 	local remaining_width = (SumArray(FIELD_SCHEME) * 4 - 4) + ((#FIELD_SCHEME - 1) * WATER_LANE_WIDTH)
 	print("Remaining Width: " .. remaining_width)
 	Forward(remaining_width)
