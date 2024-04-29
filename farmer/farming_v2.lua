@@ -77,7 +77,10 @@ function StackItems()
 			if next_idx ~= nil then
 				turtle.transferTo(next_idx)
 				if turtle.getItemDetail(i) ~= nil then
-					turtle.transferTo(find_last_free_slot(i))
+					local last_idx = find_last_free_slot(i)
+					if last_idx ~= nil then
+						turtle.transferTo(last_idx)
+					end
 				end
 			else
 				local last_idx = find_last_free_slot(i)
@@ -274,7 +277,7 @@ end
 function TakeFuel(fuel_item)
 	local total = GetTotalItemCount(fuel_item)
 	local min_fuel_items = MIN_FUEL_FOR_HARVEST_RUN / CURRENT_FUEL_ITEM_EFFICIENCY
-	turtle.suckDown(math.ceil(min_fuel_items - total))
+	turtle.suckDown(math.max(math.ceil(min_fuel_items - total), 0))
 end
 
 function HandleItems()
