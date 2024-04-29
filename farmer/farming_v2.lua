@@ -33,7 +33,7 @@ WATER_LANE_WIDTH = 1
 FIELD_SCHEME = { 1, 2, 1 }
 
 -- Global
-CROP_FILTER = "minecraft:crops"
+CROP_TAG_FILTER = "minecraft:crops"
 MIN_FUEL_FOR_HARVEST_RUN = SumArray(FIELD_SCHEME) * FIELD_LENGTH
 
 
@@ -87,7 +87,7 @@ function HarvestIfValid(replacement_seed, filter)
 		return
 	end
 
-	if CheckBlockValid(filter, data) and CheckCropAgeMature(data) then
+	if CheckBlockValid(data, filter) and CheckCropAgeMature(data) then
 		ReplaceBelow(replacement_seed)
 	end
 end
@@ -154,7 +154,7 @@ end
 -- @param {int} n How my blocks to move
 function Forward(n)
 	for i = 1, n do
-		HarvestIfValid()
+		HarvestIfValid(SEED_ITEM_NAME, CROP_TAG_FILTER)
 		CheckFuelLevels(MIN_FUEL_FOR_HARVEST_RUN, FUEL_ITEM_NAME)
 		turtle.forward()
 	end
