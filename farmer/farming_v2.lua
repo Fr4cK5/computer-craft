@@ -250,12 +250,13 @@ function Main()
 	while true do
 		for chunk_idx, v in ipairs(FIELD_SCHEME) do
 			for i = 1, v do
-				TraverseFourByLen(FIELD_LENGTH)
 				if i >= 2 and i % 2 == 0 then
+					print("cuh")
 					TurnLeft()
-					Forward(WATER_LANE_WIDTH + 1)
+					Forward(1)
 					TurnLeft()
 				end
+				TraverseFourByLen(FIELD_LENGTH)
 			end
 
 			-- We don't want to go to the next lane the last time, as it doesn't exist!
