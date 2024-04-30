@@ -11,8 +11,8 @@ function SumArray(arr)
 end
 
 -- Pause time in between harvest runs
--- 10 Minutes
-SLEEP_TIME_SECS = 600
+-- 20 Minutes
+SLEEP_TIME_SECS = 1200
 
 -- Length of the field
 FIELD_LENGTH = 20
@@ -36,22 +36,32 @@ FIELD_SCHEME = { 1, 2, 1 }
 
 -- Global
 CROP_TAG_FILTER = "minecraft:crops"
-MIN_FUEL_FOR_HARVEST_RUN = SumArray(FIELD_SCHEME) * FIELD_LENGTH
+-- MIN_FUEL_FOR_HARVEST_RUN = SumArray(FIELD_SCHEME) * FIELD_LENGTH
 
-function StackItems()
-	local find_last_free_slot = function(current_idx)
-		for i = 16, 1, -1 do
-			if i <= current_idx then
-				return nil
-			end
-			if turtle.getItemDetail(i) == nil then
-				return i
-			end
+-- General functions
+-- General functions
+-- General functions
+-- General functions
+-- General functions
+
+-- Find the last free slot.left_bound is the lowest - 1 possible index
+-- @param {int} left_bound Lowest - 1 possible index
+-- @returns {int|nil} Index, if between Lowest + 1 and 16 (inventory size). nil otherwise
+function FindLastFreeSlot(left_bound)
+	for i = 16, 1, -1 do
+		if i <= left_bound then
+			return nil
 		end
-
-		return nil
+		if turtle.getItemDetail(i) == nil then
+			return i
+		end
 	end
 
+	return nil
+end
+
+-- Push / Stack all items in the turtle's inventory to the back
+function StackItems()
 	local get_next_idx_of_same_item = function(start, name)
 		if start >= 16 then
 			return nil
@@ -78,13 +88,13 @@ function StackItems()
 			if next_idx ~= nil then
 				turtle.transferTo(next_idx)
 				if turtle.getItemDetail(i) ~= nil then
-					local last_idx = find_last_free_slot(i)
+					local last_idx = FindLastFreeSlot(i)
 					if last_idx ~= nil then
 						turtle.transferTo(last_idx)
 					end
 				end
 			else
-				local last_idx = find_last_free_slot(i)
+				local last_idx = FindLastFreeSlot(i)
 				if last_idx ~= nil then
 					turtle.transferTo(last_idx)
 				end
@@ -93,7 +103,23 @@ function StackItems()
 	end
 end
 
--- @returns {table} Block data of the below block, or nil
+function DropIdx(idx)
+	turtle.select(idx)
+	turtle.dropDown()
+end
+
+-- @param {function(item_info)} predicate The filter function
+-- @param {function(idx)} fn The function to apply to each item
+function InvFilterForeach(predicate, fn)
+	for i = 1, 16 do
+		local item_info = turtle.getItemDetail(i)
+		if item_info ~= nil and predicate(item_info) then
+			fn(i)
+		end
+	end
+end
+
+-- @returns {table|nil} Block data of the below block, or nil
 function GetBlockDetailsBelow()
 	local block_exists, data = turtle.inspectDown()
 	if not block_exists then
@@ -129,36 +155,9 @@ function CheckCropAgeMature(data)
 	return data["state"]["age"] == 7
 end
 
--- @param {string} replacement_seed The name of the replacement crop to be planted
--- @param {string} filter The tag to filter for before harvesting
-function HarvestIfValid(replacement_seed, filter)
-	local data = GetBlockDetailsBelow()
-	if data == nil then
-		return
-	end
-
-	if CheckBlockValid(data, filter) and CheckCropAgeMature(data) then
-		ReplaceBelow(replacement_seed)
-	end
-end
-
--- @param {string} repl The replacement seed
-function ReplaceBelow(repl)
-	turtle.digDown()
-	local maybe_idx = HasItemInInventory(repl)
-	if maybe_idx == 0 then
-		return
-	end
-
-	local idx = maybe_idx
-
-	turtle.select(idx)
-	turtle.placeDown()
-end
-
 -- @param {string} name The full item identifier eg. minecraft:wheat_seeds
 -- @returns {int} Index [1-16] if found, 0 otherwise
-function HasItemInInventory(name)
+function ItemIndex(name)
 	for i = 1, 16 do -- Inventory size == 16
 		local detail = turtle.getItemDetail(i)
 		if detail ~= nil then
@@ -171,7 +170,8 @@ function HasItemInInventory(name)
 	return 0
 end
 
-function GetTotalItemCount(name)
+-- @returns {int} The item count
+function TotalItemCount(name)
 	local total = 0
 	for i = 1, 16 do
 		local detail = turtle.getItemDetail(i)
@@ -185,29 +185,60 @@ function GetTotalItemCount(name)
 	return total
 end
 
--- @param {int} min_fuel The minimum amount of fuel the turtle must have
--- @param {string} fuel_item The item to be consumed as fuel
-function CheckFuelLevels(min_fuel, fuel_item)
-	local turtle_fuel_level = turtle.getFuelLevel()
-	if turtle_fuel_level < min_fuel then
-		local diff = min_fuel - turtle_fuel_level
-		local idx = HasItemInInventory(fuel_item)
+-- @returns {float} The fill percentage
+function FuelPercentage()
+	return turtle.getFuelLevel() / turtle.getFuelLimit()
+end
 
-		if idx == 0 then
-			return
-		end
+-- @param {string} replacement_seed The name of the replacement crop to be planted
+-- @param {string} filter The tag to filter for before harvesting
+function HarvestIfValid(filter)
+	local data = GetBlockDetailsBelow()
+	if data == nil then
+		return
+	end
 
-		local item_info = turtle.getItemDetail(idx)
-		turtle.select(idx)
-		turtle.refuel(math.ceil(diff / CURRENT_FUEL_ITEM_EFFICIENCY)) 
+	if CheckBlockValid(data, filter) and CheckCropAgeMature(data) then
+		turtle.digDown()
 	end
 end
+
+function TryReplant(seed_item)
+	local maybe_idx = ItemIndex(seed_item)
+	if maybe_idx == 0 then
+		return
+	end
+
+	local idx = maybe_idx
+
+	turtle.select(idx)
+	turtle.placeDown()
+end
+
+-- @param {int} min_fuel The minimum amount of fuel the turtle must have
+-- @param {string} fuel_item The item to be consumed as fuel
+function TryRefuelIfNeeded(fuel_item)
+	if FuelPercentage() < 50 then
+		local idx = ItemIndex(fuel_item)
+		if idx ~= 0 then
+			turtle.select(idx)
+			turtle.refuel()
+		end
+	end
+end
+
+-- Movement functions
+-- Movement functions
+-- Movement functions
+-- Movement functions
+-- Movement functions
 
 -- @param {int} n How my blocks to move
 function Forward(n)
 	for i = 1, n do
-		HarvestIfValid(SEED_ITEM_NAME, CROP_TAG_FILTER)
-		CheckFuelLevels(MIN_FUEL_FOR_HARVEST_RUN, FUEL_ITEM_NAME)
+		HarvestIfValid(CROP_TAG_FILTER)
+		TryReplant(SEED_ITEM_NAME)
+		TryRefuelIfNeeded(FUEL_ITEM_NAME)
 		turtle.forward()
 	end
 end
@@ -244,41 +275,64 @@ function TraverseFourByLen(len)
 	Forward(len)
 end
 
+-- Scripted Item handling
+-- Scripted Item handling
+-- Scripted Item handling
+-- Scripted Item handling
+-- Scripted Item handling
+
 -- @param {table} crops A list of item identifiers to deposit
 function DropCrops(crops)
-	for _, crop in ipairs(crops) do
-		local idx = HasItemInInventory(crop)
-		while idx ~= 0 do
-			turtle.select(idx)
-			turtle.dropDown()
-			idx = HasItemInInventory(crop)
-		end
-	end
+	InvFilterForeach(
+		function(item_info)
+			for _, crop in ipairs(crops) do
+				if item_info["name"] == crop then
+					return true
+				end
+			end
+			return false
+		end,
+		DropIdx
+	)
 end
 
 -- @param {string} seed_item Seed item identifier
 -- @param {int} min_seed_count The minimum seeds the turtle must have while harvesting
 -- @param {int} max_seed_count The maximum seeds the turtle should have while harvesting
 function RegulateSeeds(seed_item, min_seed_count, max_seed_count)
-	local total = GetTotalItemCount(seed_item)
+	local total = TotalItemCount(seed_item)
 	local diff = min_seed_count - total
 
 	if diff > 0 then
 		turtle.suckDown(diff)
 	else
-		while GetTotalItemCount(seed_item) > max_seed_count do
-			local idx = HasItemInInventory(seed_item)
-			turtle.select(idx)
-			turtle.dropDown()
+		while TotalItemCount(seed_item) > max_seed_count do
+			DropIdx(ItemIndex(seed_item))
 		end
 	end
 end
 
 -- @param {string} fuel_item The fuel item's full identifier
 function TakeFuel(fuel_item)
-	local total = GetTotalItemCount(fuel_item)
-	local min_fuel_items = MIN_FUEL_FOR_HARVEST_RUN / CURRENT_FUEL_ITEM_EFFICIENCY
-	turtle.suckDown(math.max(math.ceil(min_fuel_items - total), 0))
+	turtle.select(FindLastFreeSlot(1))
+
+	local perc = FuelPercentage()
+	while perc < 50 do
+		local got_item = turtle.suckDown()
+		if not got_item then
+			return
+		end
+		turtle.refuel() -- Refueling works since we selected a free slot
+						-- and the turtle sucks items into its current slot
+	end
+
+	-- Drop all the remaining fuel items
+	InvFilterForeach(
+		function(item_info)
+			return item_info["name"] == fuel_item
+		end,
+		DropIdx
+	)
 end
 
 function HandleItems()
@@ -303,11 +357,11 @@ function HandleItems()
 end
 
 function DropOverflowSeeds(seed_item, max_seed_count)
-	local total = GetTotalItemCount(seed_item)
+	local total = TotalItemCount(seed_item)
 	local diff = total - max_seed_count
 
 	while diff > max_seed_count do
-		local idx = HasItemInInventory(seed_item)
+		local idx = ItemIndex(seed_item)
 		local info = turtle.getItemDetail(idx)
 		local smallest = math.min(64, diff, info["count"])
 
@@ -317,6 +371,12 @@ function DropOverflowSeeds(seed_item, max_seed_count)
 		diff = diff - smallest
 	end
 end
+
+-- Main
+-- Main
+-- Main
+-- Main
+-- Main
 
 function Main()
 	while true do
