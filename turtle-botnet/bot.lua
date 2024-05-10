@@ -6,10 +6,10 @@ local function wait_for_connect()
     print("Waiting for connection...")
     repeat
         local id, msg = rednet.receive()
-        print("Got message: " .. msg)
+        print("Got handshake message: " .. msg)
         local action = Handler.Handle(msg, id)
     until action == Handler.bot_connect
-    print("Got connection")
+    print("Handshake complete")
 end
 
 local function main()

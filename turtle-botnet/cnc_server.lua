@@ -35,8 +35,8 @@ local function main()
 
     print("Sending commands")
 
-    for id in ipairs(bots) do
-        print("Sending command to: " .. id)
+    for i, id in ipairs(bots) do
+        print("Bot #" .. i .. " ID: " .. id)
         rednet.send(id, Handler.cnc_rot .. "-right")
     end
 
