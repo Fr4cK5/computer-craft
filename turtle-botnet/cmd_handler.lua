@@ -17,11 +17,6 @@ Handler = {
     bot_action = "action",
 
     Handle = function(payload, id)
-        local modem = peripheral.find("modem")
-        if not rednet.isOpen(modem) then
-            rednet.open(modem)
-        end
-
         if payload == Handler.cnc_discover then
             rednet.send(id, Handler.cnc_bot)
             return Handler.bot_connect

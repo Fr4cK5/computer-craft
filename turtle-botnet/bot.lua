@@ -1,3 +1,5 @@
+MODEM_SIDE = "left"
+
 require("cmd_handler")
 
 local function wait_for_connect()
@@ -7,8 +9,7 @@ local function wait_for_connect()
 end
 
 local function main()
-    local modem = peripheral.find("modem")
-    rednet.open(modem)
+    rednet.open(MODEM_SIDE)
 
     wait_for_connect()
 
@@ -21,7 +22,7 @@ local function main()
         end
     end
 
-    rednet.close()
+    rednet.close(MODEM_SIDE)
 end
 
 main()

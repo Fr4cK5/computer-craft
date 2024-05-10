@@ -1,3 +1,5 @@
+MODEM_SIDE = "left"
+
 require("cmd_handler")
 
 local function recv_for(time_seconds)
@@ -14,11 +16,10 @@ local function recv_for(time_seconds)
 end
 
 local function discover()
-    local modem = peripheral.find("modem")
-    rednet.open(modem)
+    rednet.open(MODEM_SIDE)
     rednet.broadcast("cnc-discover")
     local bots = recv_for(1)
-    rednet.close(modem)
+    rednet.close(MODEM_SIDE)
 
     return bots
 end
