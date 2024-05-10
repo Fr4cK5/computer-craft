@@ -7,7 +7,7 @@ local function recv_for(time_seconds)
     local start = os.clock()
     local requests = {}
     while os.clock() - start < time_seconds do
-        local id, msg = rednet.receive()
+        local id, msg = rednet.receive(os.clock() - start)
         if msg == Handler.cnc_bot then
             table.insert(requests, id)
         end
@@ -35,7 +35,8 @@ local function main()
 
     print("Sending commands")
 
-    for id in bots do
+    for id in ipairs(bots) do
+        print("Sending command to: " .. id)
         rednet.send(id, Handler.cnc_rot .. "-right")
     end
 
