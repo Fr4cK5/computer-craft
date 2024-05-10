@@ -16,20 +16,23 @@ local function recv_for(time_seconds)
 end
 
 local function discover()
-    rednet.open(MODEM_SIDE)
-    rednet.broadcast("cnc-discover")
+    rednet.broadcast(Handler.cnc_discover)
     local bots = recv_for(1)
-    rednet.close(MODEM_SIDE)
 
     return bots
 end
 
 local function main()
+
+    rednet.open(MODEM_SIDE)
+
     -- bots = [id: number]
     local bots = discover()
     for id in bots do
         rednet.send(id, Handler.cnc_rot .. "-right")
     end
+
+    rednet.close(MODEM_SIDE)
 end
 
 main()

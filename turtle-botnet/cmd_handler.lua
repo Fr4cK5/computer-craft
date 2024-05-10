@@ -18,6 +18,7 @@ Handler = {
 
     Handle = function(payload, id)
         if payload == Handler.cnc_discover then
+            sleep(.25)
             rednet.send(id, Handler.cnc_bot)
             return Handler.bot_connect
 

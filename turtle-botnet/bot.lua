@@ -4,8 +4,9 @@ require("cmd_handler")
 
 local function wait_for_connect()
     repeat
-        local id, resp = rednet.receive()
-    until resp == Handler.bot_connect
+        local id, msg = rednet.receive()
+        local action = Handler.Handle(msg, id)
+    until action == Handler.bot_connect
 end
 
 local function main()
