@@ -3,10 +3,13 @@ MODEM_SIDE = "left"
 require("cmd_handler")
 
 local function wait_for_connect()
+    print("Waiting for connection...")
     repeat
         local id, msg = rednet.receive()
+        print("Got message: " .. msg)
         local action = Handler.Handle(msg, id)
     until action == Handler.bot_connect
+    print("Got connection")
 end
 
 local function main()
@@ -16,6 +19,8 @@ local function main()
 
     while true do
         local id, msg = rednet.receive()
+        print("Got command: " .. msg)
+
         local action = Handler.Handle(msg, id)
 
         if action == Handler.bot_disconnect then
