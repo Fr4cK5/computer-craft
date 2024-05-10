@@ -21,7 +21,7 @@ end
 local function discover()
     print("Discovering")
     rednet.broadcast(Handler.cnc_discover)
-    local bots = recv_for(1)
+    local bots = recv_for(.25)
 
     return bots
 end
@@ -33,12 +33,24 @@ local function main()
     -- bots = [id: number]
     local bots = discover()
 
-    print("Sending commands")
+    while true do
 
-    for i, id in ipairs(bots) do
-        print("Bot #" .. i .. " ID: " .. id)
-        rednet.send(id, Handler.cnc_rot .. "-right")
+        local event, vk = os.pullEvent("key")
+        local key = keys.getName(vk)
+
+        local command = Handler.ParseCommand(key)
+
+        for i, id in ipairs(bots) do
+            print("Bot #" .. i .. " ID: " .. id .. " Cmd: " .. command)
+            rednet.send(id, command)
+        end
+
+        if command == Handler.cnc_disconnect then
+            print("Quitting...")
+            break
+        end
     end
+
 
     rednet.close(MODEM_SIDE)
 end
