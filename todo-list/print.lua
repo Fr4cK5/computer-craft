@@ -7,6 +7,7 @@ INDENT_COLORS = {
     [1] = colors.lightBlue,
     [2] = colors.pink,
     [3] = colors.lime,
+    [4] = colors.cyan,
 }
 
 function GeneratePrefix(line)
@@ -54,15 +55,11 @@ function Main()
         mon.setTextColor(colors.white)
         mon.write(" - ")
 
-        local idx = (#prefix / 2) % #INDENT_COLORS
-        print(idx)
+        local idx = (#prefix / 2) % (#INDENT_COLORS + 1)
         local text_color = INDENT_COLORS[idx]
 
         mon.setTextColor(text_color)
         mon.write(line)
-
-        -- line = prefix .. " - " .. line
-        -- mon.write(line)
 
         y = y + 1
 
