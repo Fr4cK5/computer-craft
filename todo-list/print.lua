@@ -43,13 +43,20 @@ function Main()
         mon.setCursorPos(1, y)
 
         mon.write(prefix)
-        mon.setTextColor(COLOR_TICK)
+
+        -- if #prefix == 0 then
+        --     mon.setTextColor(colors.white)
+        -- else
+        --     mon.setTextColor(colors.lightBlue)
+        -- end
+
+        mon.setTextColor(colors.white)
         mon.write(" - ")
 
         if #prefix == 0 then
-            mon.setTextColor(COLOR_HIGHLIGHT)
+            mon.setTextColor(colors.red)
         else
-            mon.setTextColor(COLOR_NORMAL)
+            mon.setTextColor(colors.lightBlue)
         end
 
         mon.write(line)
