@@ -11,15 +11,28 @@ end
 function Main()
     local mon = peripheral.find("monitor")
 
-    if not fs.exists("todo.txt") then
-        print("File 'todo.txt' doesn't exist.")
+    if mon == nil then
+        print("No monitor attached.")
+        return
+    end
+
+    local filename = "todo.txt"
+
+    if not fs.exists(filename) then
+        print("File '" .. filename .. "' doesn't exist.")
         return
     end
 
     mon.clear()
 
     local y = 1
-    for line in io.lines("todo.txt") do
+    for line in io.lines(filename) do
+
+        local trimmed = line:gsub("%s+", "")
+        if trimmed ~= nil and #trimmed == 0 then
+            y = y + 1
+            goto continue
+        end
 
         local prefix = GeneratePrefix(line)
 
@@ -33,6 +46,8 @@ function Main()
         mon.setCursorPos(1, y)
         mon.write(line)
         y = y + 1
+
+        ::continue::
     end
 end
 
