@@ -1,3 +1,7 @@
+COLOR_NORMAL = colors.white
+COLOR_HIGHLIGHT = colors.red
+COLOR_TICK = colors.lightBlue
+
 function GeneratePrefix(line)
     local whitespace = line:match("^%s+")
     if whitespace == nil then
@@ -28,23 +32,31 @@ function Main()
     local y = 1
     for line in io.lines(filename) do
 
-        local trimmed = line:gsub("%s+", "")
-        if trimmed ~= nil and #trimmed == 0 then
+        local prefix = GeneratePrefix(line)
+
+        line = line:gsub("%s+", "")
+        if #line == 0 then
             y = y + 1
             goto continue
         end
 
-        local prefix = GeneratePrefix(line)
+        mon.setCursorPos(1, y)
+
+        mon.write(prefix)
+        mon.setTextColor(COLOR_TICK)
+        mon.write(" - ")
 
         if #prefix == 0 then
-            mon.setTextColor(colors.red)
+            mon.setTextColor(COLOR_HIGHLIGHT)
         else
-            mon.setTextColor(colors.white)
+            mon.setTextColor(COLOR_NORMAL)
         end
 
-        line = prefix .. " - " .. line
-        mon.setCursorPos(1, y)
         mon.write(line)
+
+        -- line = prefix .. " - " .. line
+        -- mon.write(line)
+
         y = y + 1
 
         ::continue::
