@@ -1,5 +1,8 @@
 
-local line = "  Base bauen"
 
+local t = {
+    [1] = "aye",
+    [2] = "yo",
+}
 
-print(line)
+print(t[3])

@@ -2,6 +2,13 @@ COLOR_NORMAL = colors.white
 COLOR_HIGHLIGHT = colors.red
 COLOR_TICK = colors.lightBlue
 
+INDENT_COLORS = {
+    [0] = colors.red,
+    [1] = colors.lightBlue,
+    [2] = colors.pink,
+    [3] = colors.lime,
+}
+
 function GeneratePrefix(line)
     local whitespace = line:match("^%s+")
     if whitespace == nil then
@@ -44,21 +51,11 @@ function Main()
 
         mon.write(prefix)
 
-        -- if #prefix == 0 then
-        --     mon.setTextColor(colors.white)
-        -- else
-        --     mon.setTextColor(colors.lightBlue)
-        -- end
-
         mon.setTextColor(colors.white)
         mon.write(" - ")
 
-        if #prefix == 0 then
-            mon.setTextColor(colors.red)
-        else
-            mon.setTextColor(colors.lightBlue)
-        end
-
+        local text_color = INDENT_COLORS[(#prefix / 2) % #INDENT_COLORS]
+        mon.setTextColor(text_color)
         mon.write(line)
 
         -- line = prefix .. " - " .. line
