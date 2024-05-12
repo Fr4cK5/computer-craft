@@ -42,7 +42,7 @@ function Main()
 
         local prefix = GeneratePrefix(line)
 
-        line = line:gsub("%s+", "")
+        line = line:gsub("^%s+(%w|$)", "")
         if #line == 0 then
             y = y + 1
             goto continue
