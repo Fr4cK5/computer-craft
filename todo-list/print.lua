@@ -13,11 +13,9 @@ INDENT_COLORS = {
 function GeneratePrefix(line)
     local whitespace = line:match("^%s+")
     if whitespace == nil then
-        return ""
+        return 0
     end
-
-    line = line:sub(#whitespace + 1)
-    return ("  "):rep(#whitespace)
+    return #whitespace
 end
 
 function Main()
@@ -42,20 +40,18 @@ function Main()
 
         local prefix = GeneratePrefix(line)
 
-        line = line:gsub("^%s+(%w|$)", "")
-        if #line == 0 then
+        line = line:sub(prefix + 1)
+        if #line:gsub("%s+", "") == 0 then
             y = y + 1
             goto continue
         end
 
-        mon.setCursorPos(1, y)
-
-        mon.write(prefix)
+        mon.setCursorPos(prefix * 2, y)
 
         mon.setTextColor(colors.white)
         mon.write(" - ")
 
-        local idx = (#prefix / 2) % (#INDENT_COLORS + 1)
+        local idx = prefix % (#INDENT_COLORS + 1)
         local text_color = INDENT_COLORS[idx]
 
         mon.setTextColor(text_color)

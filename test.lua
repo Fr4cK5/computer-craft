@@ -1,11 +1,15 @@
 
+function GeneratePrefix(line)
+    local whitespace = line:match("^%s+")
+    if whitespace == nil then
+        return ""
+    end
 
-local t = {
-    [0] = "!",
-    [1] = "aye",
-    [2] = "yo",
-}
-
-for i = 0, 10 do
-    print(t[i % (#t + 1)])
+    line = line:sub(#whitespace + 1)
+    return ("  "):rep(#whitespace)
 end
+
+local s = "  aye yo"
+
+local prefix = GeneratePrefix(s)
+print(s:sub((#prefix / 2) + 1))
