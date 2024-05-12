@@ -54,7 +54,10 @@ function Main()
         mon.setTextColor(colors.white)
         mon.write(" - ")
 
-        local text_color = INDENT_COLORS[(#prefix / 2) % #INDENT_COLORS]
+        local idx = (#prefix / 2) % #INDENT_COLORS
+        print(idx)
+        local text_color = INDENT_COLORS[idx]
+
         mon.setTextColor(text_color)
         mon.write(line)
 
