@@ -1,7 +1,7 @@
 function GeneratePrefix(line)
     local whitespace = line:match("^%s+")
     if whitespace == nil then
-        return
+        return ""
     end
 
     line = line:sub(#whitespace + 1)

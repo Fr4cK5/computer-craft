@@ -1,7 +1,7 @@
 Files = {
 	{
 		url = "https://raw.githubusercontent.com/Fr4cK5/computer-craft/master/todo-list/print.lua",
-		filename = "tag_filter.lua",
+		filename = "print.lua",
 		ignore = false,
 	},
 }
