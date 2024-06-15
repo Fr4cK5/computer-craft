@@ -1,0 +1,58 @@
+
+/// Step 1: Sulfur Dust
+/give -> brine
+10mb brine -> 1mb sodium + **1mb chlorine**
+1mb chlorine + 1mb hydrogen -> 1mb hydrogen chloride
+200mb hydrogen chloride + 1 gun powder -> **1 sulfur dust**
+
+/// Step 2: Sulfur Dioxide
+
+1 sulfur dust -> 100mb sulfur dioxide
+
+/// Step 3: Sulfur Trioxide
+
+2mb water -> 2mb hydrogen + **1mb oxygen**
+1mb oxygen + 2mb sulfur dioxide -> 2mb sulfur trioxide
+
+/// Step 4: Sulfuric Acid
+
+1mb water -> 1mb water vapor
+1mb water vapor + 1mb sulfur trioxide -> 1mb sulfuric acid 
+
+/// Step 5: Slurry
+
+3 erz + 100mb sulfuric acid -> 2000mb slurry
+
+/// Step 6: Clean Slurry
+
+1mb slurry + 5mb water -> 1mb clean slurry
+
+/// Step 7: Ingot 
+
+200mb clean slurry -> 1 crystal
+
+1 crystal -> 1 shard
+1 shard -> 1 clump
+1 clump -> 1 dirty dust
+1 dirty dust -> 1 clean dust
+
+1 clean dust -> 1 ingot
+
+/// The math might be mathing
+
+1 ingot == 200mb clean slurry
+200mb clean slurry == 200mb slurry
+200mb slurry == 0.3 ore + 10mb sulfuric acid
+
+10mb sulfuric acid == 10mb water vapor + 10mb sulfur trioxide
+10mb water vapor == 10mb water
+
+10mb sulfur trioxide == 10mb sulfur dioxide + 5mb oxygen
+5mb oxygen == 2mb water
+
+10mb sulfor dioxide == 0.1 sulfur dust
+
+0.1 sulfur dust == 20mb hydrogen chloride + 0.1 gun powder
+20mb hydrogen chloride == 20mb chlorine + 20mb hydrogen
+20mb chlorine == 200mb brine
+

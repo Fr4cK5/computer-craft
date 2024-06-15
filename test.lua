@@ -13,3 +13,10 @@ local s = "  aye yo"
 
 local prefix = GeneratePrefix(s)
 print(s:sub((#prefix / 2) + 1))
+
+
+local name = "ae2:quartz_cluster"
+
+if name:match("ae2:quartz_cluster") then
+	print("balls in your jaws")
+end
